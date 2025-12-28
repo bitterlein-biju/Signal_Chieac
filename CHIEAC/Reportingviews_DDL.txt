@@ -1,0 +1,37 @@
+----------------------------------------------------
+-- Emotional change trends by practitioner & week
+----------------------------------------------------
+CREATE VIEW vw_EmotionalStateTrends AS
+SELECT
+    PractitionerID,
+    WeekNumber,
+    AVG(EmotionalDelta) AS AvgEmotionalChange
+FROM ClientFeedback_Fact
+GROUP BY PractitionerID, WeekNumber;
+
+
+
+----------------------------------------------------
+-- Sentiment rollups per practitioner
+----------------------------------------------------
+CREATE VIEW vw_SentimentRollups AS
+SELECT
+    PractitionerID,
+    Sentiment,
+    COUNT(*) AS FeedbackCount
+FROM ClientFeedback_Fact
+GROUP BY PractitionerID, Sentiment;
+
+
+
+----------------------------------------------------
+-- Public practitioner impact scorecard
+----------------------------------------------------
+CREATE VIEW vw_PractitionerPublicImpact AS
+SELECT
+    PractitionerID,
+    AVG(EmotionalDelta) AS AvgImpact,
+    SUM(CASE WHEN Sentiment = 'Positive' THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS PositiveRatio,
+    COUNT(*) AS TotalResponses
+FROM ClientFeedback_Fact
+GROUP BY PractitionerID;
