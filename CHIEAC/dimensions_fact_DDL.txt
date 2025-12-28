@@ -1,0 +1,57 @@
+-------------------------------------------------------
+-- Practitioner Dimension
+-------------------------------------------------------
+CREATE TABLE dbo.Practitioner_Dim (
+    PractitionerKey INT IDENTITY(1,1) PRIMARY KEY,
+    PractitionerID  VARCHAR(50) NOT NULL,
+    ActiveFlag      BIT NOT NULL DEFAULT 1,
+    CreatedDate     DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+);
+
+-------------------------------------------------------
+-- Session Dimension
+-------------------------------------------------------
+CREATE TABLE dbo.Session_Dim (
+    SessionKey   INT IDENTITY(1,1) PRIMARY KEY,
+    SessionID    VARCHAR(50) NOT NULL,
+    SessionDate  DATE        NOT NULL,
+    CreatedDate  DATETIME2   NOT NULL DEFAULT SYSUTCDATETIME()
+);
+
+-------------------------------------------------------
+-- Survey Question Dimension
+-------------------------------------------------------
+CREATE TABLE dbo.SurveyQuestion_Dim (
+    QuestionKey   INT IDENTITY(1,1) PRIMARY KEY,
+    QuestionCode  VARCHAR(50) NOT NULL,
+    QuestionText  VARCHAR(255) NOT NULL,
+    CreatedDate   DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+);
+
+-------------------------------------------------------
+-- Client Feedback Fact Table
+-------------------------------------------------------
+CREATE TABLE dbo.ClientFeedback_Fact (
+    FeedbackKey        INT IDENTITY(1,1) PRIMARY KEY,
+    PractitionerKey    INT NOT NULL,
+    SessionKey         INT NOT NULL,
+    QuestionKey        INT NOT NULL,
+    LikertScore        TINYINT,
+    EmotionBefore      TINYINT,
+    EmotionAfter       TINYINT,
+    EmotionalDelta     INT,
+    Sentiment          VARCHAR(30),
+    WeekNumber         INT,
+    MonthNumber        INT,
+    ClassTag           VARCHAR(50),
+    CreatedDate        DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+
+    CONSTRAINT FK_Fact_Practitioner
+        FOREIGN KEY (PractitionerKey) REFERENCES dbo.Practitioner_Dim(PractitionerKey),
+
+    CONSTRAINT FK_Fact_Session
+        FOREIGN KEY (SessionKey) REFERENCES dbo.Session_Dim(SessionKey),
+
+    CONSTRAINT FK_Fact_Question
+        FOREIGN KEY (QuestionKey) REFERENCES dbo.SurveyQuestion_Dim(QuestionKey)
+);
