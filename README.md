@@ -90,6 +90,28 @@ SweatSignal_ImpactReport_<PractitionerID>.pdf
 
 ---
 
+
+## Machine Learning Model
+
+SweatSignal uses a lightweight supervised learning model to classify how clients feel about each session.
+
+### Model Type
+- TF-IDF text vectorization  
+- Logistic Regression classifier  
+
+### Sentiment Classes
+- **Positive** – Happy, supportive, clear, uplifting  
+- **Neutral** – Informational or mixed  
+- **Constructive / Negative** – Confusing, unsafe, uncomfortable  
+
+### How It Works
+1. Client comments are cleaned and normalized  
+2. Text is converted into numeric vectors using TF-IDF  
+3. Logistic Regression predicts the sentiment class  
+4. Results are stored in Azure SQL for dashboards and PDFs  
+
+This allows emotional experiences to become **measurable and trendable over time**.
+
 ## Why This Matters
 Wellness professionals often rely on subjective feedback.  
 SweatSignal provides **data-driven, ethical, and transparent impact measurement** for:
